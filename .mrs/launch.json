@@ -5,7 +5,7 @@
 			"type": "mrs-debugger",
 			"request": "launch",
 			"name": "CH32V003_SOUND_V100",
-			"cwd": "c:\\Users\\Mai\\Desktop\\SOUND\\SOUND",
+			"cwd": "c:\\Users\\Mai\\Desktop\\SOUND",
 			"openOCDCfg": {
 				"useLocalOpenOCD": true,
 				"executable": "e:/MounRiver/MounRiver_Studio2/resources/app/resources/win32/components/WCH/OpenOCD/OpenOCD/bin/openocd.exe",
@@ -39,8 +39,8 @@
 					"additionalCommands": []
 				},
 				"loadedFiles": {
-					"executableFile": "c:\\Users\\Mai\\Desktop\\SOUND\\SOUND\\obj\\CH32V003_SOUND_V100.elf",
-					"symbolFile": "c:\\Users\\Mai\\Desktop\\SOUND\\SOUND\\obj\\CH32V003_SOUND_V100.elf",
+					"executableFile": "c:\\Users\\Mai\\Desktop\\SOUND\\obj\\CH32V003_SOUND_V100.elf",
+					"symbolFile": "c:\\Users\\Mai\\Desktop\\SOUND\\obj\\CH32V003_SOUND_V100.elf",
 					"executableFileOffset": 0,
 					"symbolFileOffset": 0
 				},
