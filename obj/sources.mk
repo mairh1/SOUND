@@ -25,6 +25,7 @@ SECONDARY_SIZE :=
 SUBDIRS := \
 Core \
 Debug \
+External/Button \
 External/CX588 \
 External/MultiButton \
 Peripheral/src \

@@ -1,7 +1,7 @@
 #ifndef CX588_H
 #define CX588_H
 
-#include "debug.h"
+#include <ch32v00x.h>
 
 /* CX588 Busy_Line */
 #define CX588_Busy_GPIO_Pin GPIO_Pin_1
@@ -43,6 +43,7 @@ typedef enum
 #define CX588_POWERON_CMD   0x00
 
 void CX588_GOIO_INIT(void);
+void CX588_GOIO_DEINIT(void);
 void CX588_SET_Sound_Size(CX588_SoundSize Sound_Code);
 FlagStatus CX588_Get_Busy_State(void);
 

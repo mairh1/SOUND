@@ -1,5 +1,6 @@
 #include "CX588.h"
 
+//初始化CX588
 void CX588_GOIO_INIT(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
@@ -17,6 +18,14 @@ void CX588_GOIO_INIT(void)
 
     GPIO_SetBits(CX588_1Line_GPIO_Group, CX588_1Line_GPIO_Pin);
 }
+
+//将 CX588 外围寄存器去初始化为默认值。
+void CX588_GOIO_DEINIT(void)
+{
+    GPIO_DeInit(CX588_1Line_GPIO_Group);
+    GPIO_DeInit(CX588_Busy_GPIO_Group);
+}
+
 
 // 单总线写一位数据
 static void CX588_OneWire_WriteBit(uint8_t bit) 

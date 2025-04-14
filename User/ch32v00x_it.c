@@ -14,8 +14,10 @@
 
 #include "multi_button.h"
 #include "CX588.h"
+#include "Button.h"
 
-extern int IDLE_TIME_10S_FLAG;
+extern int IDLE_TIME_COUNT;
+extern SYSTEM_STATE CURRENT_MODE;
 /*********************************************************************
  * @fn      NMI_Handler
  *
@@ -59,7 +61,8 @@ void TIM1_UP_IRQHandler(void)
     if(TIM_GetITStatus(TIM1, TIM_IT_Update)==SET)
     {
         button_ticks();
-        IDLE_TIME_10S_FLAG++;
+        if (IDLE_TIME_COUNT < 0xffffffff) 
+            IDLE_TIME_COUNT++;
     }
     TIM_ClearITPendingBit( TIM1, TIM_IT_Update );
 }
@@ -73,12 +76,20 @@ void TIM1_UP_IRQHandler(void)
  */
 void EXTI7_0_IRQHandler(void)
 {
-    if(EXTI_GetITStatus(EXTI_Line4)!=RESET)
+    if(EXTI_GetITStatus(Vibration_EXTI_Lines)!=RESET)
     {
-        printf("EXTI4 Wake_up\r\n");     
-        IDLE_TIME_10S_FLAG = 0;
-        TIM_Cmd( TIM1, ENABLE );//10MS
-        Vibration_Switch_EXTI_INIT(DISABLE);
-        EXTI_ClearITPendingBit(EXTI_Line4);     /* Clear Flag */
+        printf("Vibration_EXTI_Lines Wake_up\r\n");     
+        EXTI_ClearITPendingBit(Vibration_EXTI_Lines);     /* Clear Flag */
     }
+    else if (EXTI_GetITStatus(Hall_EXTI_Lines)!=RESET) 
+    {
+        printf("Hall_EXTI_Lines Wake_up\r\n");     
+        EXTI_ClearITPendingBit(Hall_EXTI_Lines);     /* Clear Flag */
+    }
+    else if (EXTI_GetITStatus(Charge_EXTI_Lines)!=RESET) 
+    {
+        printf("Charge_EXTI_Lines Wake_up\r\n");     
+        EXTI_ClearITPendingBit(Charge_EXTI_Lines);     /* Clear Flag */
+    }
+    CURRENT_MODE = WAKEUP_MODE;//ÇÐ»»µ½»½ÐÑÃßÄ£Ê½
 }

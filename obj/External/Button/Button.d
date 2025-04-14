@@ -1,5 +1,5 @@
-Peripheral/src/ch32v00x_i2c.o: ../Peripheral/src/ch32v00x_i2c.c \
- c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_i2c.h \
+External/Button/Button.o: ../External/Button/Button.c \
+ ../External/Button/Button.h \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x.h \
  c:/Users/Mai/Desktop/SOUND/Core/core_riscv.h \
  c:/Users/Mai/Desktop/SOUND/User/system_ch32v00x.h \
@@ -10,6 +10,7 @@ Peripheral/src/ch32v00x_i2c.o: ../Peripheral/src/ch32v00x_i2c.c \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_exti.h \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_flash.h \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_gpio.h \
+ c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_i2c.h \
  c:/Users/Mai/Desktop/SOUND/User/ch32v00x_it.h \
  c:/Users/Mai/Desktop/SOUND/Debug/debug.h \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_iwdg.h \
@@ -23,7 +24,7 @@ Peripheral/src/ch32v00x_i2c.o: ../Peripheral/src/ch32v00x_i2c.c \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_opa.h \
  c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x.h
 
-c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_i2c.h:
+../External/Button/Button.h:
 
 c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x.h:
 
@@ -44,6 +45,8 @@ c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_exti.h:
 c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_flash.h:
 
 c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_gpio.h:
+
+c:/Users/Mai/Desktop/SOUND/Peripheral/inc/ch32v00x_i2c.h:
 
 c:/Users/Mai/Desktop/SOUND/User/ch32v00x_it.h:
 

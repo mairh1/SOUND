@@ -13,6 +13,7 @@ RM := rm -rf
 -include Peripheral/src/subdir.mk
 -include External/MultiButton/subdir.mk
 -include External/CX588/subdir.mk
+-include External/Button/subdir.mk
 -include Debug/subdir.mk
 -include Core/subdir.mk
 -include subdir.mk
@@ -57,7 +58,7 @@ main-build: CH32V003_SOUND_V100.elf secondary-outputs
 
 # Tool invocations
 CH32V003_SOUND_V100.elf: $(OBJS) $(USER_OBJS)
-	@	riscv-none-embed-gcc -march=rv32ecxw -mabi=ilp32e -msmall-data-limit=0 -msave-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -Wuninitialized -g -T "c:/Users/Mai/Desktop/SOUND/SOUND/Ld/Link.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"CH32V003_SOUND_V100.map" --specs=nano.specs --specs=nosys.specs -o "CH32V003_SOUND_V100.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lprintf
+	@	riscv-none-embed-gcc -march=rv32ecxw -mabi=ilp32e -msmall-data-limit=0 -msave-restore -fmax-errors=20 -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -Wunused -Wuninitialized -g -T "c:/Users/Mai/Desktop/SOUND/Ld/Link.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"CH32V003_SOUND_V100.map" --specs=nano.specs --specs=nosys.specs -o "CH32V003_SOUND_V100.elf" $(OBJS) $(USER_OBJS) $(LIBS) -lprintf
 CH32V003_SOUND_V100.hex: CH32V003_SOUND_V100.elf
 	@	riscv-none-embed-objcopy -O ihex "CH32V003_SOUND_V100.elf" "CH32V003_SOUND_V100.hex"
 CH32V003_SOUND_V100.lst: CH32V003_SOUND_V100.elf
