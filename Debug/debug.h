@@ -28,7 +28,7 @@
 
 /* DEBUG UATR Definition */
 #ifndef DEBUG
-#define DEBUG   DEBUG_UART1_Remap2
+#define DEBUG   DEBUG_UART1_Remap1
 #endif
 
 /* SDI Printf Definition */

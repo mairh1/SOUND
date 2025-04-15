@@ -20,12 +20,12 @@
 #define Hall_EXTI_Lines             EXTI_Line2
 
 /* Charge Switch */
-#define Charge_GPIO_Pin             GPIO_Pin_1
-#define Charge_GPIO_Group           GPIOA
-#define Charge_peripheral_clock     RCC_APB2Periph_GPIOA
-#define Charge_Port_Sources         GPIO_PortSourceGPIOA
-#define Charge_Pin_sources          GPIO_PinSource1
-#define Charge_EXTI_Lines        EXTI_Line1
+#define Charge_GPIO_Pin             GPIO_Pin_6
+#define Charge_GPIO_Group           GPIOD
+#define Charge_peripheral_clock     RCC_APB2Periph_GPIOD
+#define Charge_Port_Sources         GPIO_PortSourceGPIOD
+#define Charge_Pin_sources          GPIO_PinSource6
+#define Charge_EXTI_Lines           EXTI_Line6
 
 void Switch_GPIO_INIT(void);
 void Switch_EXTI_INIT(FunctionalState sta);

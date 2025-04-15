@@ -27,7 +27,7 @@ struct Button Vibration_but1;
 struct Button Hall_but2;
 
 /* 定时器 */
-#define IDLE_TIME_OUT 1000  //1000 * 10ms = 10S
+#define IDLE_TIME_OUT 500  //500 * 10ms = 5S
 uint32_t IDLE_TIME_COUNT = 0;
 
 /* 随机数 */
@@ -56,6 +56,7 @@ int main(void)
     button_init(&Vibration_but1,Read_Button_GPIO,0,BTN_VIBRATION);
     button_attach(&Vibration_but1,PRESS_DOWN,BTN1_PRESS_DOWN_Handler);
     button_start(&Vibration_but1);
+
     button_init(&Hall_but2,Read_Button_GPIO,0,BTN_HALL);
     button_attach(&Hall_but2,SINGLE_CLICK,BTN2_SINGLE_CLICK_Handler);
     button_start(&Hall_but2);
@@ -65,7 +66,7 @@ int main(void)
 
     CX588_GOIO_INIT();
     Delay_Ms(20);
-    CX588_SET_Sound_Size(SoundLeve_10);
+    CX588_SET_Sound_Size(SoundLeve_15);
     srand(FALSE_RANDOM);
 
     while(1)
@@ -87,7 +88,8 @@ int main(void)
             case WAKEUP_MODE:
                 IDLE_TIME_COUNT = 0;
                 TIM_Cmd( TIM1, ENABLE );
-                Switch_EXTI_INIT(DISABLE);
+                //Switch_EXTI_INIT(DISABLE);
+                EXTI_DeInit();
                 CURRENT_MODE = OPERATING_MODE;//切换到工作模式
                 break;
 
@@ -99,8 +101,8 @@ int main(void)
             case OPERATING_MODE:
                 if (CX588_Get_Busy_State())
                 {
-                    CX588_Play_Sound((rand() % (0x08 + 1))+1);//随机播放音频
-                    printf("rand() ID: %d \n", rand() % (0x08 + 1));
+                    CX588_Play_Sound((rand() % (0x07 + 1))+1);//随机播放音频
+                    printf("rand() ID: %d \n", rand() % (0x07 + 1));
                 }
                 FALSE_RANDOM += IDLE_TIME_COUNT;//填充随机数种子
                 IDLE_TIME_COUNT = 0;//清空空闲计数
@@ -151,7 +153,8 @@ void BTN1_PRESS_DOWN_Handler(void* btn)
     struct Button *button = (struct Button *)btn; // 强制类型转换
     printf("Button ID: %d Clicked!\n", button->button_id);
 
-    CURRENT_MODE = OPERATING_MODE;//切换到工作模式
+    IDLE_TIME_COUNT = 0;     // 清空空闲计数
+    CURRENT_MODE = OPERATING_MODE;//切换到工作模式  
 }
 
 /*********************************************************************
@@ -172,12 +175,14 @@ void BTN2_SINGLE_CLICK_Handler(void* btn)
     if (Hall_FLAG)
     {
         //语音输出：关闭语音
+        CX588_Play_Sound(0x0c);
         CX588_GOIO_DEINIT();
     }
     else
     {
         CX588_GOIO_INIT();
         //语音输出：打开语音
+        CX588_Play_Sound(0x0b);
     }
 
     Hall_FLAG = !Hall_FLAG;  // 切换 Hall_FLAG 的状态
@@ -195,11 +200,17 @@ void BTN2_SINGLE_CLICK_Handler(void* btn)
 void Check_Power_Link(void)
 {
     static bool CHARGE_FLAG = false;  // 静态变量，保留状态
+    static bool SOUND_FLAG = false;  // 静态变量，保留状态
 
     if (GPIO_ReadInputDataBit(Charge_GPIO_Group, Charge_GPIO_Pin) != Bit_SET)
     {
         CHARGE_FLAG = true;
         CURRENT_MODE = CHARGE_MODE; // 切换到充电模式
+        if (SOUND_FLAG != true)
+        {
+            SOUND_FLAG = true;
+            CX588_Play_Sound(0x09);
+        }
     }    
     else 
     {
@@ -208,6 +219,9 @@ void Check_Power_Link(void)
             button_start(&Vibration_but1);
             button_start(&Hall_but2);
             CHARGE_FLAG = false;
+            SOUND_FLAG = false;
+            CX588_Play_Sound(0x0a);
+            IDLE_TIME_COUNT = 0;     // 清空空闲计数
             CURRENT_MODE = SLEEP_MODE; // 切换到休眠模式
         }           
     }

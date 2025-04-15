@@ -28,13 +28,14 @@ void Switch_GPIO_INIT(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(Charge_GPIO_Group, &GPIO_InitStructure);
 
-    Switch_EXTI_INIT(DISABLE);
-
     NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
+
+    //Switch_EXTI_INIT(DISABLE);
+    EXTI_DeInit();
 }
 
 
