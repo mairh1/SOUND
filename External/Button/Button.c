@@ -19,6 +19,8 @@ void Switch_GPIO_INIT(void)
     GPIO_Init(Vibration_GPIO_Group, &GPIO_InitStructure);
 
     RCC_APB2PeriphClockCmd(Hall_peripheral_clock, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    GPIO_PinRemapConfig(GPIO_Remap_PA1PA2,DISABLE);
     GPIO_InitStructure.GPIO_Pin = Hall_GPIO_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_Init(Hall_GPIO_Group, &GPIO_InitStructure);
