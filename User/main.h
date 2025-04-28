@@ -23,4 +23,6 @@ void TIM1_INT_Init( u16 arr, u16 psc);
 //void Check_Power_Link(void);
 //void Config_peripheralClock(FunctionalState NewState);
 
+void Close_Useless_GPIO(void);
+
 #endif /* __MAIN_H */

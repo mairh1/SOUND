@@ -40,19 +40,14 @@ bool Hall_FLAG = true;  // 静态变量，保留状态
 /* 运行状态（模式）*/
 SYSTEM_STATE CURRENT_MODE = SLEEP_MODE; 
 
-
+/* 唤醒标志 */
 bool WAKER_FLAG = false;
 
 int main(void)
 {
     SystemCoreClockUpdate();
     Delay_Init();
-    USART_Printf_Init(115200);
-    printf("SystemClk:%d\r\n", SystemCoreClock);
-    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
-
-    //LEDx_GPIO_INIT();
-    //GPIO_ResetBits(LED1_GPIO_Group,LED1_GPIO_Pin);
+    Close_Useless_GPIO();
 
     Switch_GPIO_INIT();
     button_init(&Vibration_but1,Read_Button_GPIO,0,BTN_VIBRATION);
@@ -72,8 +67,7 @@ int main(void)
 
     while(1)
     {
-        srand(FALSE_RANDOM);                //生成播放声音文件随机数
-        //GPIO_ResetBits(LED1_GPIO_Group,LED1_GPIO_Pin);//运行时打开LED灯
+        srand(FALSE_RANDOM);            //生成播放声音文件随机数
 
         switch (CURRENT_MODE)
         {
@@ -83,23 +77,17 @@ int main(void)
                     TIM_Cmd(TIM1, DISABLE);//关闭计时器
                     Switch_EXTI_INIT();
                     RCC_PB1PeriphClockCmd(RCC_PB1Periph_PWR, ENABLE);
-                    /*close cc1,cc2 pull-down resistors */
-                    USBPD->PORT_CC1 &= ~(0x01<<1);
-                    USBPD->PORT_CC2 &= ~(0x01<<1);
                     //进入停止模式，任意中断唤醒，唤醒后会进入该中断回调函数
-
-                    PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+                    PWR_EnterSTOPMode_RAM_LV(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
                 }               
                 break;
+
             case WAKEUP_MODE:
                 IDLE_TIME_COUNT = 0;
 
                 SystemCoreClockUpdate();
-                printf("SystemClk:%d\r\n", SystemCoreClock);
-
                 TIM1_INT_Init( 10-1, 48000-1);
                 TIM_Cmd( TIM1, ENABLE ); 
-                USART_Printf_Init(115200);
 
                 Switch_EXTI_DEINIT();
                 RCC_PB1PeriphClockCmd(RCC_PB1Periph_PWR, DISABLE);
@@ -110,12 +98,12 @@ int main(void)
                     CURRENT_MODE = OPERATING_MODE;//切换到工作模式
                 }
                 else
-                {
                     CURRENT_MODE = SLEEP_MODE;//切换到工作模式
-                }
                 break;
+
             case CHARGE_MODE:
                 break;
+
             case OPERATING_MODE:
                 if (CX588_Get_Busy_State() && Hall_FLAG)
                     CX588_Play_Sound((rand() % (CX588_SOUND_DATA + 1))+1);//随机播放音频（里面只有8段音频文件）
@@ -124,6 +112,7 @@ int main(void)
                 IDLE_TIME_COUNT = 0;//清空空闲计数
                 CURRENT_MODE = SLEEP_MODE;//切换到休眠模式
                 break;  
+
             default:
                 break;
         }
@@ -154,25 +143,12 @@ void BTN1_PRESS_DOWN_Handler(void* btn)
 void BTN2_SINGLE_CLICK_Handler(void* btn)
 {
     if (Hall_FLAG)
-    {
-        //语音输出：关闭语音
-        CX588_Play_Sound(CX588_CLOSE_SOUND);
-        Delay_Ms(40);
-        //CX588_GOIO_DEINIT();
-        printf("关闭语音!\r\n");
-    }
+        CX588_Play_Sound(CX588_CLOSE_SOUND);//语音输出：关闭语音
     else
-    {
-        //CX588_GOIO_INIT();
-        //语音输出：打开语音
-        Delay_Ms(40);
-        CX588_Play_Sound(CX588_OPEN_SOUND);
-        printf("打开语音!\r\n");
-    }
+        CX588_Play_Sound(CX588_OPEN_SOUND);//语音输出：打开语音
 
     Hall_FLAG = !Hall_FLAG;  // 切换 Hall_FLAG 的状态
     IDLE_TIME_COUNT = 0;     // 清空空闲计数
-
 }
 
 /*********************************************************************
@@ -210,4 +186,26 @@ void TIM1_INT_Init( u16 arr, u16 psc)
 
     TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
 
+}
+
+/*********************************************************************
+ * @fn      Close_Useless_GPIO
+ *
+ * @brief   Turn off useless GPIO pins
+ *
+ * @return  none
+ */
+void Close_Useless_GPIO(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure = {0};
+
+    RCC_PB2PeriphClockCmd(RCC_PB2Periph_GPIOA, ENABLE);    
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 |GPIO_Pin_5 |GPIO_Pin_6 |GPIO_Pin_7 |GPIO_Pin_8 |GPIO_Pin_9 |GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    RCC_PB2PeriphClockCmd(RCC_PB2Periph_GPIOB, ENABLE);    
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 |GPIO_Pin_1 |GPIO_Pin_6 |GPIO_Pin_10 |GPIO_Pin_13 |GPIO_Pin_14 |GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
 }

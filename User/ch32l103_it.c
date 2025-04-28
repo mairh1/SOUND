@@ -61,11 +61,11 @@ void TIM1_UP_IRQHandler(void)
 {
     if(TIM_GetITStatus(TIM1, TIM_IT_Update)==SET)
     {
-        if (IDLE_TIME_COUNT %100 == 0) 
+/*         if (IDLE_TIME_COUNT %100 == 0) 
         {
             printf("IDLE_TIME_COUNT = %d\r\n",IDLE_TIME_COUNT);
             printf("CURRENT_MODE = %d\r\n",CURRENT_MODE);
-        }
+        } */
         
 
         button_ticks();
@@ -88,7 +88,7 @@ void EXTI0_IRQHandler(void)
     {
         SystemInit();
         WAKER_FLAG = true;
-        printf("Vibration_EXTI_Lines Wake_up\r\n");
+        // printf("Vibration_EXTI_Lines Wake_up\r\n");
         EXTI_ClearITPendingBit(Vibration_EXTI_Lines);     /* Clear Flag */
         CURRENT_MODE = WAKEUP_MODE;//ÇÐ»»µ½»½ÐÑÃßÄ£Ê½
     }
@@ -106,7 +106,7 @@ void EXTI1_IRQHandler(void)
     if(EXTI_GetITStatus(Hall_EXTI_Lines)!=RESET)
     {
         SystemInit();
-        printf("Hall_EXTI_Lines Wake_up\r\n");
+        // printf("Hall_EXTI_Lines Wake_up\r\n");
         EXTI_ClearITPendingBit(Hall_EXTI_Lines);     /* Clear Flag */
         CURRENT_MODE = WAKEUP_MODE;//ÇÐ»»µ½»½ÐÑÃßÄ£Ê½
     }
@@ -124,7 +124,7 @@ void EXTI15_10_IRQHandler(void)
     if(EXTI_GetITStatus(Charge_EXTI_Lines)!=RESET)
     {
         SystemInit();
-        printf("Charge_EXTI_Lines Wake_up\r\n");
+        // printf("Charge_EXTI_Lines Wake_up\r\n");
         EXTI_ClearITPendingBit(Charge_EXTI_Lines);     /* Clear Flag */
         CURRENT_MODE = WAKEUP_MODE;//ÇÐ»»µ½»½ÐÑÃßÄ£Ê½
     }
