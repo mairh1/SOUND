@@ -68,6 +68,7 @@ int main(void)
     while(1)
     {
         srand(FALSE_RANDOM);            //生成播放声音文件随机数
+        Check_Charger_Link();           //检查充电器连接
 
         switch (CURRENT_MODE)
         {
@@ -83,13 +84,13 @@ int main(void)
                 break;
 
             case WAKEUP_MODE:
-                IDLE_TIME_COUNT = 0;
+                IDLE_TIME_COUNT = 0;//清空计数器
 
                 SystemCoreClockUpdate();
                 TIM1_INT_Init( 10-1, 48000-1);
                 TIM_Cmd( TIM1, ENABLE ); 
 
-                Switch_EXTI_DEINIT();
+                Switch_EXTI_DEINIT();//关闭GPIO端口EXTI中断
                 RCC_PB1PeriphClockCmd(RCC_PB1Periph_PWR, DISABLE);
 
                 if (WAKER_FLAG)
@@ -102,6 +103,9 @@ int main(void)
                 break;
 
             case CHARGE_MODE:
+                button_stop(&Vibration_but1);
+                button_stop(&Hall_but2);
+                IDLE_TIME_COUNT = 0; //清空计数器
                 break;
 
             case OPERATING_MODE:
@@ -118,7 +122,6 @@ int main(void)
         }
     }
 }
-
 
 uint8_t Read_Button_GPIO(uint8_t button_id)
 {
@@ -140,6 +143,7 @@ void BTN1_PRESS_DOWN_Handler(void* btn)
     IDLE_TIME_COUNT = 0;     // 清空空闲计数
     CURRENT_MODE = OPERATING_MODE;//切换到工作模式 
 }
+
 void BTN2_SINGLE_CLICK_Handler(void* btn)
 {
     if (Hall_FLAG)
@@ -151,6 +155,35 @@ void BTN2_SINGLE_CLICK_Handler(void* btn)
     IDLE_TIME_COUNT = 0;     // 清空空闲计数
 }
 
+void Check_Charger_Link(void)
+{
+    static bool CHARGE_FLAG = false;  // 静态变量，保留状态
+    static bool SOUND_FLAG = false;  // 静态变量，保留状态
+
+    if (GPIO_ReadInputDataBit(Charge_GPIO_Group, Charge_GPIO_Pin) != Bit_SET)
+    {
+        CHARGE_FLAG = true;
+        CURRENT_MODE = CHARGE_MODE; // 切换到充电模式
+        if (SOUND_FLAG != true)
+        {
+            SOUND_FLAG = true;
+            CX588_Play_Sound(CX588_POWERIN_DATA);
+        }
+    }    
+    else 
+    {
+        if (CHARGE_FLAG)  // 判断静态变量
+        {
+            CHARGE_FLAG = false;
+            SOUND_FLAG = false;
+            button_start(&Vibration_but1);
+            button_start(&Hall_but2);
+            CX588_Play_Sound(CX588_POWEROUT_DATA);
+            IDLE_TIME_COUNT = 0;     // 清空空闲计数
+            CURRENT_MODE = SLEEP_MODE; // 切换到休眠模式
+        }           
+    }
+}
 /*********************************************************************
  * @fn      TIM1_INT_Init
  *

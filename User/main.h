@@ -18,11 +18,9 @@ typedef enum {
 uint8_t Read_Button_GPIO(uint8_t button_id);
 void BTN1_PRESS_DOWN_Handler(void* btn);
 void BTN2_SINGLE_CLICK_Handler(void* btn);
+void Check_Charger_Link();
 
 void TIM1_INT_Init( u16 arr, u16 psc);
-//void Check_Power_Link(void);
-//void Config_peripheralClock(FunctionalState NewState);
-
 void Close_Useless_GPIO(void);
 
 #endif /* __MAIN_H */
